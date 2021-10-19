@@ -267,6 +267,9 @@
         <if test="request.projectId != null and request.projectId!=''">
             and t1.project_id = #{request.projectId}
         </if>
+        <if test="request.followPeople != null">
+            and t1.follow_people = #{request.followPeople}
+        </if>
         <if test="request.id != null and request.id!=''">
             and t1.id = #{request.id}
         </if>

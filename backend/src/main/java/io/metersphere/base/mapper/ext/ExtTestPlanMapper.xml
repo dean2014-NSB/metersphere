@@ -121,6 +121,9 @@
             <if test="request.projectId != null">
                 AND test_plan.project_id = #{request.projectId}
             </if>
+            <if test="request.followPeople != null">
+                and test_plan.follow_people = #{request.followPeople}
+            </if>
             <if test="request.id != null">
                 AND test_plan.id = #{request.id}
             </if>

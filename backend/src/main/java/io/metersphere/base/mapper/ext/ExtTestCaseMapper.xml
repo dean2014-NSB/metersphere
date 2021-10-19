@@ -374,6 +374,9 @@
             <if test="request.projectId != null">
                 and test_case.project_id = #{request.projectId}
             </if>
+            <if test="request.followPeople != null">
+                and test_case.follow_people = #{request.followPeople}
+            </if>
             <include refid="filters"/>
             <if test="request.caseCoverage == 'uncoverage' ">
                 and test_case.id not in (select distinct test_case_test.test_case_id from test_case_test)

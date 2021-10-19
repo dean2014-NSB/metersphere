@@ -190,6 +190,9 @@
             <if test="request.projectId != null">
                 AND api_scenario.project_id = #{request.projectId}
             </if>
+            <if test="request.followPeople != null">
+                AND api_scenario.follow_people = #{request.followPeople}
+            </if>
             <if test="request.createTime >0 ">
                 AND api_scenario.create_time >= #{request.createTime}
             </if>

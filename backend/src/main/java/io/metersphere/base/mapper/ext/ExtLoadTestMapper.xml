@@ -75,6 +75,9 @@
             <if test="request.projectId != null">
                 AND project.id = #{request.projectId}
             </if>
+            <if test="request.followPeople != null">
+                AND load_test.follow_people = #{request.followPeople}
+            </if>
             <if test="request.id != null">
                 AND load_test.id = #{request.id}
             </if>

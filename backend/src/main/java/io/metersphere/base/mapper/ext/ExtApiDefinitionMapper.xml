@@ -612,6 +612,9 @@
                 <when test="request.projectId != null">
                     AND api_definition.project_id = #{request.projectId}
                 </when>
+                <when test="request.followPeople != null">
+                    and api_definition.follow_people = #{request.followPeople}
+                </when>
                 <when test="request.workspaceId != null">
                     AND project.workspace_id = #{request.workspaceId}
                 </when>
