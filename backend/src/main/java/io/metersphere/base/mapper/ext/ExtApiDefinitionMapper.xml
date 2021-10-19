@@ -120,6 +120,12 @@
                 <property name="object" value="${condition}.name"/>
             </include>
         </if>
+        <if test="${condition}.followPeople != null">
+            and api_definition.follow_people
+            <include refid="condition">
+                <property name="object" value="${condition}.followPeople"/>
+            </include>
+        </if>
         <if test="${condition}.updateTime != null">
             and api_definition.update_time
             <include refid="condition">
@@ -611,9 +617,6 @@
                 </when>
                 <when test="request.projectId != null">
                     AND api_definition.project_id = #{request.projectId}
-                </when>
-                <when test="request.followPeople != null">
-                    and api_definition.follow_people = #{request.followPeople}
                 </when>
                 <when test="request.workspaceId != null">
                     AND project.workspace_id = #{request.workspaceId}
