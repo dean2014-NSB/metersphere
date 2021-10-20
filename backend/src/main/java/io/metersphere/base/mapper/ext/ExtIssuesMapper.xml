@@ -26,7 +26,7 @@
         SELECT * FROM issues WHERE issues.project_id = #{projectId} ORDER BY num DESC LIMIT 1;
     </select>
     <select id="getCountByStatus" resultType="io.metersphere.base.domain.IssuesDao">
-        select count(id) as count, issues.status from issues
+        select count(id) as totalIssueCount, issues.status from issues
         <include refid="queryWhereCondition"/>
         group by issues.status;
     </select>
