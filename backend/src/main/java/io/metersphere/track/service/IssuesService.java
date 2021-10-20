@@ -553,4 +553,9 @@ public class IssuesService {
         issues.setCustomFields(JSONObject.toJSONString(fields));
         issuesMapper.updateByPrimaryKeySelective(issues);
     }
+
+    public List<IssuesDao> getCountByStatus(IssuesRequest request){
+        return extIssuesMapper.getCountByStatus(request);
+
+    }
 }

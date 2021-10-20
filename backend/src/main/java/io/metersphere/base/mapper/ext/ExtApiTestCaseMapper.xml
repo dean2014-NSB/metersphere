@@ -210,6 +210,67 @@
         </if>
     </sql>
 
+    <sql id="countCombine">
+        <if test='${condition}.name != null and (${name} == null or ${name} == "")'>
+            and api_test_case.name
+            <include refid="condition">
+                <property name="object" value="${condition}.name"/>
+            </include>
+        </if>
+        <if test="${condition}.followPeople != null">
+            and api_test_case.follow_people
+            <include refid="condition">
+                <property name="object" value="${condition}.followPeople"/>
+            </include>
+        </if>
+        <if test="${condition}.updateTime != null">
+            and api_test_case.update_time
+            <include refid="condition">
+                <property name="object" value="${condition}.updateTime"/>
+            </include>
+        </if>
+        <if test="${condition}.createTime != null">
+            and api_test_case.create_time
+            <include refid="condition">
+                <property name="object" value="${condition}.createTime"/>
+            </include>
+        </if>
+        <if test="${condition}.priority != null">
+            and api_test_case.priority
+            <include refid="condition">
+                <property name="object" value="${condition}.priority"/>
+            </include>
+        </if>
+        <if test="${condition}.creator != null">
+            and api_test_case.create_user_id
+            <include refid="condition">
+                <property name="object" value="${condition}.creator"/>
+            </include>
+        </if>
+        <if test='${condition}.tags != null and ${objectKey}.operator == "not like"'>
+            and (api_test_case.tags is null or api_test_case.tags
+            <include refid="condition">
+                <property name="object" value="${condition}.tags"/>
+            </include>
+            )
+        </if>
+        <if test='${condition}.tags != null and ${objectKey}.operator == "like"'>
+            and api_test_case.tags
+            <include refid="condition">
+                <property name="object" value="${condition}.tags"/>
+            </include>
+        </if>
+        <if test="${condition}.isReference != null">
+            and api_test_case.id
+            <if test='${condition}.isReference.value == "true"'>
+                in (SELECT reference_id FROM api_scenario_reference_id WHERE reference_id is not null )
+            </if>
+            <if test='${condition}.isReference.value == "false"'>
+                not in (SELECT reference_id FROM api_scenario_reference_id WHERE reference_id is not null )
+            </if>
+        </if>
+    </sql>
+
     <select id="selectApiCaseInfoByPrimaryKey" resultType="io.metersphere.api.dto.definition.ApiTestCaseInfo">
         SELECT
             t1.*,
@@ -326,7 +387,7 @@
             and (t1.status is null or t1.status != 'Trash')
         </if>
         <if test="request.toUpdate !=null and request.toUpdate == true">
-            and (t1.update_time >= '${@io.metersphere.commons.utils.DateUtils@getTimestamp(-3)}' or t2.status = 'error')
+            and (t1.update_time >= 'request.updateTime' or t2.status = 'error')
         </if>
         GROUP BY  t1.id,
         t1.project_id,
@@ -463,6 +524,11 @@
           AND testCase.create_time BETWEEN #{firstDayTimestamp} AND #{lastDayTimestamp}
     </select>
 
+    <select id="moduleCount" resultType="java.lang.Integer">
+        SELECT count(id)  FROM api_test_case
+        <include refid="criCondition"/>
+    </select>
+
     <select id="getRequest" resultType="io.metersphere.api.dto.definition.ApiTestCaseInfo">
         select t1.id, t1.request,a.method AS apiMethod
         from api_test_case t1
@@ -535,7 +601,7 @@
         WHERE testCase.id = #{0}
     </select>
 
-    <sql id="queryWhereCondition">
+<sql id="queryWhereCondition">
         <where>
             <if test="request.name != null and request.name!=''">
                 and t1.name like CONCAT('%', #{request.name},'%')
@@ -596,6 +662,19 @@
             </if>
         </where>
     </sql>
+
+    <sql id="criCondition">
+        <where>
+            <if test="request.combine != null">
+                <include refid="countCombine">
+                    <property name="condition" value="request.combine"/>
+                    <property name="name" value="request.name"/>
+                    <property name="objectKey" value="request.combine.tags"/>
+                </include>
+            </if>
+        </where>
+    </sql>
+
     <select id="selectIdsByQuery" resultType="java.lang.String">
         SELECT t1.id
         FROM api_test_case t1
