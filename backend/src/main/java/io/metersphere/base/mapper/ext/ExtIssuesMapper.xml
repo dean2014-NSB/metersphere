@@ -26,9 +26,9 @@
         SELECT * FROM issues WHERE issues.project_id = #{projectId} ORDER BY num DESC LIMIT 1;
     </select>
     <select id="getCountByStatus" resultType="io.metersphere.base.domain.IssuesDao">
-        select count(id) as totalIssueCount, issues.status from issues
+        select count(id) as totalIssueCount, ifnull(issues.status,issues.platform_status) as status from issues
         <include refid="queryWhereCondition"/>
-        group by issues.status;
+        group by status;
     </select>
     <select id="getRelateIssues" resultType="io.metersphere.base.domain.IssuesDao">
         select issues.id, issues.num, issues.title, issues.project_id, issues.create_time, issues.update_time,
@@ -90,7 +90,8 @@
                         <choose>
                             <when test="key == 'platform'">
                                 AND issues.platform IN
-                                <foreach collection="values" item="value" separator="," open="(" close=")">
+                                <foreach collection="values" item="
+" separator="," open="(" close=")">
                                     #{value}
                                 </foreach>
                             </when>
